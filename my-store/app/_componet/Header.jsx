@@ -36,7 +36,7 @@ function Header() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
 
-            <h2 className='hidden md:flex gap-2 items-center border rounded-full p-2 px-10 bg-slate-200'><LayoutGrid className='h-5 w-5' />ประเภทสินค้า</h2>
+            <h2 className='hidden md:flex gap-2 items-center border rounded-full p-2 px-10'><LayoutGrid className='h-5 w-5' />ประเภทสินค้า</h2>
 
           </DropdownMenuTrigger>
           <DropdownMenuContent>

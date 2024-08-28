@@ -37,9 +37,9 @@ function ProductItemDetail({ product }) {
 
                 <div className='flex flex-col items-baseline gap-3'>
                     <div className='p-2 border flex gap-10 items-center px-5'>
-                        <button disabled={quantity == 1} onClick={() => setQuantity(quantity - 1)}>-</button>
+                        <button className="p-1.5 select-none" disabled={quantity == 1} onClick={() => setQuantity(quantity - 1)}>-</button>
                         <h2>{quantity}</h2>
-                        <button onClick={() => setQuantity(quantity + 1)}>+</button>
+                        <button className="p-1.5 select-none"  onClick={() => setQuantity(quantity + 1)}>+</button>
                     </div>
 
                     <h2 className='text-5xl font-bold'> {(quantity * productTotalPrice).toFixed(2)} บาท </h2>
