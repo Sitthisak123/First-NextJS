@@ -3,7 +3,7 @@ import Image from "next/image";
 import Slider from "./_componet/Slider";
 import GlobalApi from "./_utils/GlobalApi";
 import ProductList from "./_componet/ProductList";
- 
+
 
 export default async function Home() {
   const sliderList = await GlobalApi.getSliders();

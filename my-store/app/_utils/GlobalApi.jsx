@@ -5,6 +5,9 @@ const axiosClient = axios.create({
 })
 
 const getCategory = () => axiosClient.get('/categories?populate=*');
+const getOnceCategory = (category) => axiosClient.get(`/products?filters[categories][name][$in]=${category}&populate=*`).then(resp => {
+    return resp.data.data
+});
 
 const getSliders = () => axiosClient.get('/sliders?populate=*').then(resp => {
     return resp.data.data
@@ -17,5 +20,6 @@ const getAllproduct = () => axiosClient.get('/products?populate=*').then(resp =>
 export default {
     getCategory,
     getSliders,
-    getAllproduct
+    getAllproduct,
+    getOnceCategory
 }

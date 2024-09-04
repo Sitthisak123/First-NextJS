@@ -14,6 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import GlobalApi from '../_utils/GlobalApi'
+import Link from 'next/link'
 
 function Header() {
   const [cetCategoryList, setCategoryLise] = useState([]);
@@ -44,17 +45,20 @@ function Header() {
             <DropdownMenuSeparator />
 
             {cetCategoryList.map((category, index) => (
-              <DropdownMenuItem className="hover:scale-110 ease-in-out">
-                <Image src={
-                  process.env.NEXT_PUBLIC_BACKEND_BASE_URL +
-                  category?.attributes?.icon?.data[0]?.attributes?.url}
-                  unoptimized={true}
-                  atl='icon'
-                  width={30}
-                  height={30} />
+              <Link href={`/products-category/${category?.attributes?.name}`}>
+                <DropdownMenuItem className="hover:scale-110 ease-in-out">
+                  <Image src={
+                    process.env.NEXT_PUBLIC_BACKEND_BASE_URL +
+                    category?.attributes?.icon?.data[0]?.attributes?.url}
+                    unoptimized={true}
+                    atl='icon'
+                    width={30}
+                    height={30} />
 
-                <h2>{category?.attributes?.name}</h2>
-              </DropdownMenuItem>
+                  <h2>{category?.attributes?.name}</h2>
+                </DropdownMenuItem>
+              </Link>
+
             ))}
 
           </DropdownMenuContent>

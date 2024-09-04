@@ -9,6 +9,7 @@ import {
 import Image from 'next/image'
   
 function Slider({sliderList}) {
+  
   return (
     <div>
         <Carousel>
