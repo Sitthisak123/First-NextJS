@@ -43,6 +43,15 @@ function Header() {
           <DropdownMenuContent>
             <DropdownMenuLabel>เลือกประเภทอาหาร</DropdownMenuLabel>
             <DropdownMenuSeparator />
+            <Link href={`../..`}>
+                <DropdownMenuItem className="hover:scale-110 ease-in-out">
+                  <div 
+                    width={30}
+                    height={30} />
+
+                  <h2>แนะนำ</h2>
+                </DropdownMenuItem>
+                </Link>
 
             {cetCategoryList.map((category, index) => (
               <Link href={`/products-category/${category?.attributes?.name}`}>
