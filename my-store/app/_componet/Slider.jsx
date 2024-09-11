@@ -7,9 +7,8 @@ import {
     CarouselPrevious,
   } from "@/components/ui/carousel"
 import Image from 'next/image'
-  
 function Slider({sliderList}) {
-  
+
   return (
     <div>
         <Carousel>

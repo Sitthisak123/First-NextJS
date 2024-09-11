@@ -1,7 +1,8 @@
 "use client"
 import { Button } from '@/components/ui/button'
-import { LayoutGrid, ShoppingBag } from 'lucide-react'
+import { CircleUserRoundIcon, LayoutGrid, ShoppingBag } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { useTheme } from "next-themes"
 import { MoonIcon, SunIcon } from "@radix-ui/react-icons"
@@ -15,19 +16,35 @@ import {
 } from "@/components/ui/dropdown-menu"
 import GlobalApi from '../_utils/GlobalApi'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+
 
 function Header() {
+  const pathBName = usePathname();
+  const router = useRouter();
+  const { asPath, query } = router;
+
+  const [isLogin, setIsLogin] = useState(false);
   const [cetCategoryList, setCategoryLise] = useState([]);
+
 
   useEffect(() => {
     getCategoryList();
-  }, [])
+    setIsLogin(sessionStorage.getItem('jwt') ? true : false);
+  }, [isLogin, pathBName])
 
   const getCategoryList = () => {
     GlobalApi.getCategory().then(response => {
       setCategoryLise(response.data.data)
     })
   }
+
+  const onSignOut = () => {
+    sessionStorage.clear();
+    setIsLogin(() => false);
+    router.push('/sign-in');
+  }
+
 
   return (
     <div className='p-5 shadow-sm flex justify-between'>
@@ -44,14 +61,14 @@ function Header() {
             <DropdownMenuLabel>เลือกประเภทอาหาร</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <Link href={`../..`}>
-                <DropdownMenuItem className="hover:scale-110 ease-in-out">
-                  <div 
-                    width={30}
-                    height={30} />
+              <DropdownMenuItem className="hover:scale-110 ease-in-out">
+                <div
+                  width={30}
+                  height={30} />
 
-                  <h2>แนะนำ</h2>
-                </DropdownMenuItem>
-                </Link>
+                <h2>แนะนำ</h2>
+              </DropdownMenuItem>
+            </Link>
 
             {cetCategoryList.map((category, index) => (
               <Link href={`/products-category/${category?.attributes?.name}`}>
@@ -77,7 +94,26 @@ function Header() {
       <div className='flex gap-5 items-center'>
         <ModeToggle />
         <h2 className='flex gap-2 items-center text-lg'><ShoppingBag />0</h2>
-        <Button>Login</Button>
+        {
+          isLogin ?
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <CircleUserRoundIcon className='h-12 w-12 p-2 rounded-full bg-green-100 text-primary' />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuLabel>บัญชีของฉัน</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>ข้อมูลผู้ใช้</DropdownMenuItem>
+                <DropdownMenuItem>รายการสั่งซื้อ</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => onSignOut()}  >ออกจากระบบ</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            :
+            <Link href={'/sign-in'}>
+              <Button>Login</Button>
+            </Link>
+
+        }
       </div>
 
     </div>
