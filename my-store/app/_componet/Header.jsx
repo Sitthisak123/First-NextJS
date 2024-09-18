@@ -1,7 +1,7 @@
 "use client"
 import { Button } from '@/components/ui/button'
-import { CircleUserRoundIcon, LayoutGrid, ShoppingBag } from 'lucide-react'
-import React, { useEffect, useState } from 'react'
+import { CircleUserRoundIcon, LayoutGrid, Search, ShoppingBag, ShoppingBasket, UserRoundIcon } from 'lucide-react'
+import React, { useEffect, useState, useContext } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { useTheme } from "next-themes"
@@ -17,21 +17,34 @@ import {
 import GlobalApi from '../_utils/GlobalApi'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-
-
+import { UpdateCartContext } from '../_context/UpdateCartContext'
 function Header() {
   const pathBName = usePathname();
   const router = useRouter();
-  const { asPath, query } = router;
 
   const [isLogin, setIsLogin] = useState(false);
   const [cetCategoryList, setCategoryLise] = useState([]);
+  const [totalCartItem, setTotalCartItem] = useState(0);
+  const jwt = sessionStorage.getItem('jwt');
 
+  const user = JSON.parse(sessionStorage.getItem('user'));
+  const { updateCart, setUpdateCart } = useContext(UpdateCartContext);
 
   useEffect(() => {
     getCategoryList();
     setIsLogin(sessionStorage.getItem('jwt') ? true : false);
   }, [isLogin, pathBName])
+  useEffect(() => {
+    getCartItems();
+  }, [updateCart])
+  const getCartItems = async () => {
+
+    if (jwt) {
+      const cartItemList = await GlobalApi.getCartItem(user.id, jwt);
+      setTotalCartItem(cartItemList?.length)
+    }
+
+  }
 
   const getCategoryList = () => {
     GlobalApi.getCategory().then(response => {
@@ -89,11 +102,16 @@ function Header() {
 
           </DropdownMenuContent>
         </DropdownMenu>
-
       </div>
+
       <div className='flex gap-5 items-center'>
         <ModeToggle />
-        <h2 className='flex gap-2 items-center text-lg'><ShoppingBag />0</h2>
+        <h2 className='flex gap-2 items-center text-lg'>
+          <ShoppingBasket className='h-7 w-7' />
+          <span className='bg-primary text-white px-2 rounded-full' >
+            {totalCartItem}
+          </span>
+        </h2>
         {
           isLogin ?
             <DropdownMenu>
@@ -112,10 +130,8 @@ function Header() {
             <Link href={'/sign-in'}>
               <Button>Login</Button>
             </Link>
-
         }
       </div>
-
     </div>
   )
 }

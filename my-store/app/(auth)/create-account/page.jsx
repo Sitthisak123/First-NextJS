@@ -23,7 +23,8 @@ function CreateAccount() {
         }
     },[])
 
-    const onCreateAccount=()=>{
+    const onCreateAccount=(e)=>{
+        e.preventDefault();
         GlobalApi.registerUser(username,email,password).then(resp=>{
             console.log(resp.data.user)
             console.log(resp.data.jwt)
@@ -54,15 +55,15 @@ function CreateAccount() {
             <h2 className='font-bold text-3xl'>สมัครสมาชิกใหม่</h2>
             <h2 className='text-gray-500'>ระบุอีเมล์และรหัสผ่านเพื่อสมัครสมาชิกใหม่</h2>
 
-            <div className='w-full flex flex-col gap-5 mt-7'>
+            <form onSubmit={(e)=>onCreateAccount(e)} className='w-full flex flex-col gap-5 mt-7'>
                 <Input placeholder='ระบุชื่อผู้ใช้' onChange={(e)=>setUsername(e.target.value)}/>
                 <Input placeholder='ระบุอีเมล์'onChange={(e)=>setEmail(e.target.value)}/>
                 <Input type='password' placeholder='ระบุรหัสผ่าน' onChange={(e)=>setPassword(e.target.value)}/>
-                <Button onClick={()=>onCreateAccount()}  disabled={!(username||email||password)}>สมัครสมาชิก</Button>
+                <Button disabled={!(username&&email&&password)}>สมัครสมาชิก</Button>
                 <p>กรณีเป็นสมาชิกอยู่แล้ว
                     <Link href={'/sign-in'} className='text-blue-500'>คลิ๊กเพื่อเข้าสู่ระบบ</Link>
                 </p>
-            </div>
+            </form>
      
         </div>
     </div>

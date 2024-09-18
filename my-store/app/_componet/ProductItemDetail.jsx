@@ -2,9 +2,21 @@
 import { Button } from '@/components/ui/button'
 import { ShoppingBag, ShoppingBasket } from 'lucide-react'
 import Image from 'next/image'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import GlobalApi from '../_utils/GlobalApi'
+import { toast } from 'sonner'
+import { UpdateCartContext } from '../_context/UpdateCartContext'
 
 function ProductItemDetail({ product }) {
+
+    const jwt = sessionStorage.getItem('jwt');
+
+    const router = useRouter();
+
+    const user = JSON.parse(sessionStorage.getItem('user'));
+
+    const { updateCart, setUpdateCart } = useContext(UpdateCartContext);
 
     const [productTotalPrice, setproductTotalPrice] = useState(
         product.attributes.sellingPrice ?
@@ -13,6 +25,31 @@ function ProductItemDetail({ product }) {
     )
 
     const [quantity, setQuantity] = useState(1);
+
+    const addToCart = () => {
+        if (!jwt) {
+            router.push('/sign-in')
+            return;
+        }
+
+        const data = {
+            data: {
+                quantity: quantity,
+                amount: (quantity * productTotalPrice).toFixed(2),
+                products: product.id,
+                users_permissions_users: user.id,
+                userId: user.id
+            }
+        }
+
+        GlobalApi.addToCart(data, jwt).then(resp => {
+            toast('เพิ่มสินค้าลงตระกร้าสำเร็จ');
+            setUpdateCart(!updateCart);
+        }, (e) => {
+            toast('ไม่สามารถเพิ่มสินค้าลงตระกร้า')
+        })
+
+    }
 
     return (
         <div className='grid grid-cols-1 md:grid-cols-2 p-7 bg-white text-black'>
@@ -37,22 +74,19 @@ function ProductItemDetail({ product }) {
 
                 <div className='flex flex-col items-baseline gap-3'>
                     <div className='p-2 border flex gap-10 items-center px-5'>
-                        <button className="p-1.5 select-none" disabled={quantity == 1} onClick={() => setQuantity(quantity - 1)}>-</button>
+                        <button disabled={quantity == 1} onClick={() => setQuantity(quantity - 1)}>-</button>
                         <h2>{quantity}</h2>
-                        <button className="p-1.5 select-none"  onClick={() => setQuantity(quantity + 1)}>+</button>
+                        <button onClick={() => setQuantity(quantity + 1)}>+</button>
                     </div>
 
                     <h2 className='text-5xl font-bold'> {(quantity * productTotalPrice).toFixed(2)} บาท </h2>
 
-                    <Button className="flex gap-7">
+                    <Button className="flex gap-7" onClick={() => addToCart()}>
                         <ShoppingBag />
                         เพิ่มสินค้า
                     </Button>
-
                 </div>
-
             </div>
-
         </div>
     )
 }

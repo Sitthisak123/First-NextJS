@@ -22,7 +22,8 @@ function SignIn() {
     }
   }, [])
 
-  const onSignIn = () => {
+  const onSignIn = (e) => {
+    e.preventDefault();
     GlobalApi.signIn(email, password).then(resp => {
 
       console.log(resp.data.user)
@@ -51,15 +52,15 @@ function SignIn() {
         <h2 className='font-bold text-3xl'>เข้าสู่ระบบ</h2>
         <h2 className='text-gray-500'>ระบุอีเมล์และรหัสผ่านเพื่อเข้าสู่ระบบ</h2>
 
-        <div className='w-full flex flex-col gap-5 mt-7'>
+        <form onSubmit={(e) => onSignIn(e)} className='w-full flex flex-col gap-5 mt-7'>
 
           <Input placeholder='ระบุอีเมล์' onChange={(e) => setEmail(e.target.value)} />
           <Input type='password' placeholder='ระบุรหัสผ่าน' onChange={(e) => setPassword(e.target.value)} />
-          <Button onClick={() => onSignIn()} disabled={!(email || password)}>เข้าสู่ระบบ</Button>
+          <Button type="submit" disabled={!(email || password)}>เข้าสู่ระบบ</Button>
           <p>กรณีไม่เป็นสมาชิก
             <Link href={'/create-account'} className='text-blue-500'>คลิ๊กเพื่อเข้าสมัครสมาชิก</Link>
           </p>
-        </div>
+        </form>
 
       </div>
     </div>
