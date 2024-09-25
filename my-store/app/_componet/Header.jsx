@@ -1,8 +1,17 @@
 "use client"
 import { Button } from '@/components/ui/button'
 import { CircleUserRoundIcon, LayoutGrid, Search, ShoppingBag, ShoppingBasket, UserRoundIcon } from 'lucide-react'
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
 import React, { useEffect, useState, useContext } from 'react'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { useTheme } from "next-themes"
 import { MoonIcon, SunIcon } from "@radix-ui/react-icons"
@@ -16,15 +25,19 @@ import {
 } from "@/components/ui/dropdown-menu"
 import GlobalApi from '../_utils/GlobalApi'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import CartItemList from './CartitemList'
 import { UpdateCartContext } from '../_context/UpdateCartContext'
+
 function Header() {
-  const pathBName = usePathname();
+  const pathName = usePathname();
   const router = useRouter();
 
+  const currentCategory = pathName.split('/').pop();
   const [isLogin, setIsLogin] = useState(false);
   const [cetCategoryList, setCategoryLise] = useState([]);
+  const [cartItemList, setCartItemList] = useState([]);
   const [totalCartItem, setTotalCartItem] = useState(0);
+  const [subtotal, setSubTotal] = useState(0);
   const jwt = sessionStorage.getItem('jwt');
 
   const user = JSON.parse(sessionStorage.getItem('user'));
@@ -33,17 +46,27 @@ function Header() {
   useEffect(() => {
     getCategoryList();
     setIsLogin(sessionStorage.getItem('jwt') ? true : false);
-  }, [isLogin, pathBName])
+  }, [isLogin, pathName])
+
   useEffect(() => {
     getCartItems();
   }, [updateCart])
-  const getCartItems = async () => {
 
+  useEffect(() => {
+    let total = 0;
+    cartItemList.forEach(element => {
+      total = total + element.amount
+    });
+    setSubTotal(total.toFixed(2))
+  }, [cartItemList])
+
+
+  const getCartItems = async () => {
     if (jwt) {
       const cartItemList = await GlobalApi.getCartItem(user.id, jwt);
       setTotalCartItem(cartItemList?.length)
+      setCartItemList(cartItemList);
     }
-
   }
 
   const getCategoryList = () => {
@@ -57,6 +80,14 @@ function Header() {
     setIsLogin(() => false);
     router.push('/sign-in');
   }
+
+  const onDeleteItem = (id) => {
+    GlobalApi.deleteCartItem(id, jwt).then(resp => {
+      toast('ลบสินค้าออกจากตะกร้าแล้ว');
+      getCartItems();
+    })
+  }
+
 
 
   return (
@@ -106,12 +137,33 @@ function Header() {
 
       <div className='flex gap-5 items-center'>
         <ModeToggle />
-        <h2 className='flex gap-2 items-center text-lg'>
-          <ShoppingBasket className='h-7 w-7' />
-          <span className='bg-primary text-white px-2 rounded-full' >
-            {totalCartItem}
-          </span>
-        </h2>
+        <Sheet>
+          <SheetTrigger>
+            <h2 className='flex gap-2 items-center text-lg'>
+              <ShoppingBasket className='h-7 w-7' />
+              <span className='bg-primary text-white px-2 rounded-full' >
+                {totalCartItem}
+              </span>
+            </h2>
+          </SheetTrigger>
+          <SheetContent>
+            <SheetHeader>
+              <SheetTitle className="bg-primary text-white font-bold text-lg p-2">ตะกร้าสินค้า</SheetTitle>
+              <SheetDescription>
+                <CartItemList cartItemList={cartItemList} onDeleteItem={onDeleteItem} />
+              </SheetDescription>
+            </SheetHeader>
+            <SheetClose asChild>
+              <div className='absolute w-[90%] bottom-6 flex flex-col'>
+                <h2 className='text-lg font-bold flex justify-between'>ราคารวม
+                  <span>{subtotal} บาท </span></h2>
+                <Button
+                  disabled={cartItemList.length == 0}
+                  onClick={() => router.push(jwt ? '/checkout' : '/sign-in')}>ชำระเงิน</Button>
+              </div>
+            </SheetClose>
+          </SheetContent>
+        </Sheet>
         {
           isLogin ?
             <DropdownMenu>

@@ -28,20 +28,39 @@ const signIn = (email, password) => axiosClient.post('/auth/local', {
     password: password
 })
 
-const addToCart=(data,jwt)=>axiosClient.post('/user-carts',data,{
-    headers:{
-        Authorization:'Bearer '+jwt
+const addToCart = (data, jwt) => axiosClient.post('/user-carts', data, {
+    headers: {
+        Authorization: 'Bearer ' + jwt
     }
 })
 
 
-const getCartItem=(userId,jwt)=>axiosClient.get('/user-carts?filters[userId][$eq]='+userId+'&populate=*',{
-    headers:{
-        Authorization:'Bearer '+jwt
+const getCartItem = (userId, jwt) => axiosClient.get('/user-carts?filters[userId][$eq]=' + userId + '&populate=*', {
+    headers: {
+        Authorization: 'Bearer ' + jwt
     }
-}).then(resp=>{
-    return resp.data.data;
+}).then(resp => {
+    // const data = resp.data.data;
+    // const cartItemsList = data.map((item, index) => ({
+    //     name: item.attributes.products?.data[0].attributes.name,
+    //     quantity: item.attributes.quantity,
+    //     amount: item.attributes.amount,
+    //     image: item.attributes.products?.data[0].attributes.images.data[0].attributes.url,
+    //     actualPrice: item.attributes.products?.data[0].attributes.mrp,
+    //     id: item.id,
+    //     product: item.attributes.products?.data[0].id
+    // }))
+    return resp.data.data
 })
+
+
+const deleteCartItem = (id, jwt) => axiosClient.delete('/user-carts/' + id,
+    {
+        headers: {
+            Authorization: 'Bearer ' + jwt
+        }
+    })
+
 
 export default {
     getCategory,
@@ -51,5 +70,6 @@ export default {
     registerUser,
     signIn,
     addToCart,
-    getCartItem
+    getCartItem,
+    deleteCartItem
 }

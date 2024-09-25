@@ -9,29 +9,21 @@ import { toast } from 'sonner'
 import { UpdateCartContext } from '../_context/UpdateCartContext'
 
 function ProductItemDetail({ product }) {
-
     const jwt = sessionStorage.getItem('jwt');
-
     const router = useRouter();
-
     const user = JSON.parse(sessionStorage.getItem('user'));
-
     const { updateCart, setUpdateCart } = useContext(UpdateCartContext);
-
     const [productTotalPrice, setproductTotalPrice] = useState(
         product.attributes.sellingPrice ?
             product.attributes.sellingPrice :
             product.attributes.mrp
     )
-
     const [quantity, setQuantity] = useState(1);
-
     const addToCart = () => {
         if (!jwt) {
             router.push('/sign-in')
             return;
         }
-
         const data = {
             data: {
                 quantity: quantity,
@@ -50,7 +42,6 @@ function ProductItemDetail({ product }) {
         })
 
     }
-
     return (
         <div className='grid grid-cols-1 md:grid-cols-2 p-7 bg-white text-black'>
             <Image src={process.env.NEXT_PUBLIC_BACKEND_BASE_URL + product.attributes.images.data[0].attributes.url}

@@ -6,6 +6,8 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { usePathname } from "next/navigation";
 import { UpdateCartContext } from "./_context/UpdateCartContext";
 import { useState } from "react";
+
+
 const outfit = Outfit({ subsets: ["latin"] });
 
 export default function RootLayout({ children }) {
