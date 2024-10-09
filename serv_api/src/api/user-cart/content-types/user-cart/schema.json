@@ -18,12 +18,6 @@
     "amount": {
       "type": "integer"
     },
-    "products": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::product.product",
-      "inversedBy": "user_carts"
-    },
     "users_permissions_users": {
       "type": "relation",
       "relation": "manyToMany",
@@ -32,6 +26,12 @@
     },
     "userId": {
       "type": "integer"
+    },
+    "products": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::product.product",
+      "inversedBy": "user_carts"
     }
   }
 }
