@@ -4,7 +4,8 @@
   "info": {
     "singularName": "order",
     "pluralName": "orders",
-    "displayName": "Order"
+    "displayName": "Order",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -30,12 +31,19 @@
       "type": "integer"
     },
     "totalOrderAmount": {
-      "type": "integer"
+      "type": "decimal"
     },
     "orderItemList": {
       "type": "component",
       "repeatable": true,
       "component": "ordered-item.ordered-item"
+    },
+    "status": {
+      "type": "string",
+      "default": "รอดำเนินการ"
+    },
+    "paymentId": {
+      "type": "string"
     }
   }
 }

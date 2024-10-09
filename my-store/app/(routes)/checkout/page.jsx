@@ -4,11 +4,12 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ArrowBigRight } from 'lucide-react'
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { toast } from 'sonner';
-
+import { UpdateCartContext } from '@/app/_context/UpdateCartContext';
 function CheckOut() {
-
+  const { updateCart, setUpdateCart } = useContext(UpdateCartContext)
+  const router = useRouter();
   const user=JSON.parse(sessionStorage.getItem('user'));
   const jwt=sessionStorage.getItem('jwt');
   const [totalCartItem,setTotalCartItem]=useState(0);
@@ -50,13 +51,32 @@ function CheckOut() {
     setSubTotal(total.toFixed(2))
   },[cartItemList])
 
-/** 
-const calculateTotalAmount=()=>{
-  const totalAmount=subtotal*0.07+100;
+  const onApprove=(data)=>{
+    const payload={
+      data:{
+        totalOrderAmount:totalAmount,
+        username:username,
+        email:email,
+        phone:phone,
+        zip:zip,
+        address:address,
+        orderItemList:cartItemList,
+        userId:user.id
+      }
+    }
   
-  return totalAmount.toFixed(2)
-}
-*/
+    GlobalApi.createOrder(payload,jwt).then(resp=>{
+      toast('บันทึกออร์เดอร์สำเร็จ');
+      cartItemList.forEach((item,index)=>{
+        GlobalApi.deleteCartItem(item.id,jwt).then(resp=>{
+        })
+        setUpdateCart(null)
+      })
+      router.replace('/');
+    })
+  
+  }
+  
   return (
   <div>
     <h2 className='p-3 bg-primary text-xl font-bold text-center text-white'>ชำระเงิน</h2>
@@ -84,7 +104,8 @@ const calculateTotalAmount=()=>{
                 <h2 className='flex justify-between'>ภาษีมูลค่าเพิ่ม (7%) : <span>{(subtotal*0.07).toFixed(2)} บาท</span></h2>
                   <hr></hr>
                 <h2 className='font-bold flex justify-between'>ราคาสุทธิ : <span>{totalAmount} บาท</span></h2>
-                <Button><ArrowBigRight/></Button>
+                <Button disabled={!(username||email||phone||zip||address)} onClick={()=>onApprove()} >
+                <ArrowBigRight/>ชำระเงิน</Button>
             </div>
           </div>
         </div>
@@ -93,3 +114,5 @@ const calculateTotalAmount=()=>{
 }
 
 export default CheckOut
+
+

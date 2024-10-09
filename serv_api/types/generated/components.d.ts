@@ -9,6 +9,11 @@ export interface OrderedItemOrderedItem extends Schema.Component {
   attributes: {
     quantity: Attribute.Integer;
     price: Attribute.Decimal;
+    product: Attribute.Relation<
+      'ordered-item.ordered-item',
+      'oneToOne',
+      'api::product.product'
+    >;
   };
 }
 

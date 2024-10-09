@@ -8,7 +8,6 @@ import GlobalApi from '../_utils/GlobalApi'
 import Link from 'next/link'
 import { UpdateCartContext } from '../_context/UpdateCartContext'
 import CartItemList from './CartItemList'
-
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -30,7 +29,6 @@ import {
 
 
 function Header() {
-
   const [categorylist, setCategoryList] = useState([]);
   const isLogin = sessionStorage.getItem('jwt') ? true : false
   const router = useRouter();
@@ -161,7 +159,7 @@ function Header() {
               <DropdownMenuLabel>บัญชีของฉัน</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem>ข้อมูลผู้ใช้</DropdownMenuItem>
-              <DropdownMenuItem>รายการสั่งซื้อ</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => router.push(jwt ? '/my-orders' : '/sign-in')} >รายการสั่งซื้อ</DropdownMenuItem>
               <DropdownMenuItem onClick={() => onSignOut()}  >ออกจากระบบ</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
