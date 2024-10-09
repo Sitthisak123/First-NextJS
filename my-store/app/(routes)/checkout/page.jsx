@@ -72,7 +72,7 @@ function CheckOut() {
         })
         setUpdateCart(null)
       })
-      router.replace('/');
+      router.replace('/order-confirmation');
     })
   
   }
